@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import MenuIcon from '@material-ui/icons/Menu'
 import CloseIcon from '@material-ui/icons/Close'
 import { useSelector } from 'react-redux'
+// import { RemoveScroll } from 'react-remove-scroll/UI'
 
 import { selectCars } from "../features/car/carSlice"
 
@@ -12,6 +13,8 @@ function Header() {
 
 	const changeBurgerStatus = () => {
 		setBurgerStatus(!burgerStatus)
+		const bodySelect = document.querySelector("body")
+		bodySelect.classList.toggle("hideScroll")		
 	}
 
 	return (
@@ -29,25 +32,27 @@ function Header() {
 				<a href="#">Tesla Account</a>
 				<CustomMenu onClick={ changeBurgerStatus } />
 			</RightMenu>
-			<BurgerNav show={burgerStatus}>
-				<CloseWrapper>
-					<CustomClose onClick={ changeBurgerStatus } />
-				</CloseWrapper>
-				{cars && cars.map( (car, index) => (
-					<li><a key={index} href="#">{car}</a></li>
-				))}
-				<li> <a href="#">Existing Inventory</a> </li>
-				<li> <a href="#">Used Inventory</a> </li>
-				<li> <a href="#">Trade-in</a> </li>
-				<li> <a href="#">Cybertruck</a> </li>
-				<li> <a href="#">Roadster</a> </li>
-				<li> <a href="#">Semi</a> </li>
-				<li> <a href="#">Charging</a> </li>
-				<li> <a href="#">Power</a> </li>
-				<li> <a href="#">Components</a> </li>
-				<li> <a href="#">Utilities</a> </li>
-				<li> <a href="#">Test Drive</a> </li>
-			</BurgerNav>
+			{/* <RemoveScroll> */}
+				<BurgerNav show={burgerStatus}>
+					<CloseWrapper>
+						<CustomClose onClick={ changeBurgerStatus } />
+					</CloseWrapper>
+					{cars && cars.map( (car, index) => (
+						<li><a key={index} href="#">{car}</a></li>
+					))}
+					<li> <a href="#">Existing Inventory</a> </li>
+					<li> <a href="#">Used Inventory</a> </li>
+					<li> <a href="#">Trade-in</a> </li>
+					<li> <a href="#">Cybertruck</a> </li>
+					<li> <a href="#">Roadster</a> </li>
+					<li> <a href="#">Semi</a> </li>
+					<li> <a href="#">Charging</a> </li>
+					<li> <a href="#">Power</a> </li>
+					<li> <a href="#">Components</a> </li>
+					<li> <a href="#">Utilities</a> </li>
+					<li> <a href="#">Test Drive</a> </li>
+				</BurgerNav>
+			{/* </RemoveScroll> */}
 		</Container>
 	)
 }
@@ -69,6 +74,15 @@ const Container = styled.div `
 	background-color: rgba( 255, 255, 255, 0.5);
 	box-shadow: 0 35px 55px rgba(0, 0, 0, 0.1);
 
+	@media(max-width: 400px){
+		min-height: 40px;
+		padding: 0 10px;
+		a{
+			img{
+				width: 75px;
+			}
+		}
+	}
 `
 
 const Menu = styled.div `
@@ -100,6 +114,12 @@ const RightMenu = styled.div `
 		margin-right: 10px;
 		white-space: nowrap;
 	}
+	@media(max-width: 400px){
+		a{
+			font-size: 12px;
+		}
+	}
+
 `
 
 const CustomMenu = styled(MenuIcon) `
@@ -111,7 +131,7 @@ const BurgerNav = styled.div `
 	top: 0;
 	bottom: 0;
 	right: 0;
-	background-color: white;
+	background: rgba( 255, 255, 255, 1);
 	width: 300px;
 	z-index: 16;
 	list-style: none;
@@ -123,6 +143,8 @@ const BurgerNav = styled.div `
 	transform: ${ props => props.show ? 'translateX(0)' : 'translateX(100%)'};
 	transition: transform 0.2s ease-in-out;
 
+	overflow-y: scroll ;
+	
 	li{
 		padding: 15px 0;
 		border-bottom: 1px solid rgba(0, 0, 0, 0.2);
@@ -133,6 +155,9 @@ const BurgerNav = styled.div `
 		}
 	}
 
+	::-webkit-scrollbar {
+  	display: none;
+	}
 `
 
 const CloseWrapper = styled.div `

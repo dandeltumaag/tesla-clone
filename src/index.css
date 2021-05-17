@@ -5,11 +5,19 @@
 	padding: 0;
 	box-sizing: border;		
 	font-family: 'Rubik', sans-serif;
+	/* -ms-overflow-style: none; */
 }
+
+/* ::-webkit-scrollbar {
+  display: none;
+} */
 
 body{
 	width: 100%;
 	overflow-x: hidden;
+}
+body.hideScroll{
+	overflow: hidden;
 }
 
 a{
