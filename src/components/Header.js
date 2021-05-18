@@ -1,13 +1,33 @@
-import React,{ useState } from 'react'
+import React,{ useState, useEffect } from 'react'
+import { auth, provider } from '../firebase' /*  */
+import { useDispatch, useSelector } from 'react-redux' /* useDispatch */
+import { useHistory } from 'react-router-dom' /*  */
+
+import {
+  selectUserName,
+  selectUserPhoto,
+  selectUserEmail,
+  setUserLogin,
+  setSignOut
+} from '../features/user/userSlice'
+
+
 import styled from 'styled-components'
 import MenuIcon from '@material-ui/icons/Menu'
 import CloseIcon from '@material-ui/icons/Close'
-import { useSelector } from 'react-redux'
+
 // import { RemoveScroll } from 'react-remove-scroll/UI'
 
 import { selectCars } from "../features/car/carSlice"
 
 function Header() {
+	const dispatch = useDispatch() /*  */
+	const history = useHistory() /*  */
+	const userName = useSelector(selectUserName) /*  */
+  const userPhoto = useSelector(selectUserPhoto) /*  */
+  const userEmail = useSelector(selectUserEmail) /*  */
+
+
 	const [burgerStatus, setBurgerStatus] = useState(false)
 	const cars = useSelector(selectCars)
 
@@ -17,6 +37,44 @@ function Header() {
 		bodySelect.classList.toggle("hideScroll")		
 	}
 
+  useEffect( () => {
+    auth.onAuthStateChanged(async(user)=>{
+      if(user){
+        dispatch(setUserLogin({
+          name: user.displayName,
+          email: user.email,
+          photo: user.photoURL
+        }))
+        history.push("/")
+      }
+    })
+  }, [])
+
+  const signIn = () => {
+    // create a popup window to login using google
+    auth.signInWithPopup(provider)
+    .then( (result) => {
+      // if result is found grab the result ie, name, email, photo
+      let user = result.user
+      dispatch(setUserLogin({
+        name: user.displayName,
+        email: user.email,
+        photo: user.photoURL
+      }))
+      history.push("/")
+			console.log("output",userEmail)
+    })
+	}
+
+  const signOut = () => {
+    auth.signOut()
+    .then( () => {
+      dispatch(setSignOut())
+      history.push("/")
+    })
+  }	
+
+	
 	return (
 		<Container>
 			<a>
@@ -29,7 +87,12 @@ function Header() {
 			</Menu>
 			<RightMenu>
 				<a href="#">Shop</a>
-				<a href="#">Tesla Account</a>
+				{!userName ?
+					<Login onClick={signIn}>
+							Tesla Account
+					</Login> :
+					<UserImg onClick={signOut} src={userPhoto} />			
+				}
 				<CustomMenu onClick={ changeBurgerStatus } />
 			</RightMenu>
 			{/* <RemoveScroll> */}
@@ -167,4 +230,17 @@ const CloseWrapper = styled.div `
 
 const CustomClose = styled(CloseIcon) `
 	cursor: pointer;
+`
+
+const Login = styled.a `
+	cursor: pointer;
+`
+
+const signOut = styled(Login) ``
+
+const UserImg = styled.img`
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
 `

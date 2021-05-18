@@ -1,5 +1,12 @@
 import React from 'react'
 
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from 'react-router-dom'
+
 /* COMPONENTD */
 import Header from './components/Header'
 import Home from './components/Home'
@@ -9,10 +16,16 @@ import './App.css';
 
 function App() {
   return (
-    <div className="App">
-			<Header />
-			<Home />
-    </div>
+		<div className="App">
+			<Router>
+				<Header />
+				<Switch>
+					<Route>
+						<Home path="/" />
+					</Route>
+				</Switch>
+			</Router>
+		</div>
   );
 }
 
